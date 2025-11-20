@@ -61,11 +61,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/products", async (req, res) => {
     try {
+      console.log("Received product data:", req.body);
       const validatedData = insertProductSchema.parse(req.body);
+      console.log("Validated data:", validatedData);
       const product = await storage.createProduct(validatedData);
       res.status(201).json(product);
     } catch (error) {
-      res.status(400).json({ error: "Invalid product data" });
+      console.error("Product validation error:", error);
+      res.status(400).json({ error: "Invalid product data", details: error instanceof Error ? error.message : String(error) });
     }
   });
 

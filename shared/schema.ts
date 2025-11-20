@@ -15,7 +15,13 @@ export const products = pgTable("products", {
   description: text("description"),
 });
 
-export const insertProductSchema = createInsertSchema(products).omit({
+export const insertProductSchema = createInsertSchema(products, {
+  quantity: z.number().int().min(0),
+  minQuantity: z.number().int().min(0),
+  expirationDate: z.union([z.date(), z.string().datetime(), z.null()]).optional().nullable(),
+  category: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
+}).omit({
   id: true,
 });
 
