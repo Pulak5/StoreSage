@@ -83,9 +83,16 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)"],
+        sans: ["Roboto", "sans-serif"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
+      },
+      fontSize: {
+        'page-header': ['2rem', { lineHeight: '1.2', fontWeight: '500' }],
+        'page-header-mobile': ['1.5rem', { lineHeight: '1.2', fontWeight: '500' }],
+        'section-header': ['1.5rem', { lineHeight: '1.3', fontWeight: '500' }],
+        'section-header-mobile': ['1.25rem', { lineHeight: '1.3', fontWeight: '500' }],
+        'card-title': ['1.125rem', { lineHeight: '1.4', fontWeight: '500' }],
       },
       keyframes: {
         "accordion-down": {

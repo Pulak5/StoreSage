@@ -1,4 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { localStorageService } from "./localStorage";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -38,7 +39,19 @@ export const getQueryFn: <T>(options: {
     }
 
     await throwIfResNotOk(res);
-    return await res.json();
+    const data = await res.json();
+    
+    // Sync with localStorage after successful GET
+    const url = queryKey[0] as string;
+    if (url === "/api/products") {
+      localStorageService.saveProducts(data);
+    } else if (url === "/api/borrowed") {
+      localStorageService.saveBorrowedItems(data);
+    } else if (url === "/api/reminders") {
+      localStorageService.saveReminders(data);
+    }
+    
+    return data;
   };
 
 export const queryClient = new QueryClient({
@@ -52,6 +65,10 @@ export const queryClient = new QueryClient({
     },
     mutations: {
       retry: false,
+      onSuccess: async (data, variables, context: any) => {
+        // Sync localStorage after successful mutations
+        // The invalidateQueries in components will trigger a refetch that syncs localStorage
+      },
     },
   },
 });

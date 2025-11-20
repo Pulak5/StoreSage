@@ -1,37 +1,153 @@
-import { type User, type InsertUser } from "@shared/schema";
+import {
+  type Product,
+  type InsertProduct,
+  type BorrowedItem,
+  type InsertBorrowedItem,
+  type Reminder,
+  type InsertReminder,
+} from "@shared/schema";
 import { randomUUID } from "crypto";
 
-// modify the interface with any CRUD methods
-// you might need
-
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  // Products
+  getProducts(): Promise<Product[]>;
+  getProduct(id: string): Promise<Product | undefined>;
+  createProduct(product: InsertProduct): Promise<Product>;
+  updateProduct(id: string, product: InsertProduct): Promise<Product | undefined>;
+  deleteProduct(id: string): Promise<boolean>;
+
+  // Borrowed Items
+  getBorrowedItems(): Promise<BorrowedItem[]>;
+  getBorrowedItem(id: string): Promise<BorrowedItem | undefined>;
+  createBorrowedItem(item: InsertBorrowedItem): Promise<BorrowedItem>;
+  markAsReturned(id: string): Promise<BorrowedItem | undefined>;
+
+  // Reminders
+  getReminders(): Promise<Reminder[]>;
+  getReminder(id: string): Promise<Reminder | undefined>;
+  createReminder(reminder: InsertReminder): Promise<Reminder>;
+  deleteReminder(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+  private products: Map<string, Product>;
+  private borrowedItems: Map<string, BorrowedItem>;
+  private reminders: Map<string, Reminder>;
 
   constructor() {
-    this.users = new Map();
+    this.products = new Map();
+    this.borrowedItems = new Map();
+    this.reminders = new Map();
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  // Products
+  async getProducts(): Promise<Product[]> {
+    return Array.from(this.products.values());
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async getProduct(id: string): Promise<Product | undefined> {
+    return this.products.get(id);
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async createProduct(insertProduct: InsertProduct | Product): Promise<Product> {
+    // If the product already has an ID (from localStorage), preserve it
+    const id = (insertProduct as any).id || randomUUID();
+    const product: Product = { 
+      ...insertProduct, 
+      id,
+      category: insertProduct.category || null,
+      description: insertProduct.description || null,
+      expirationDate: insertProduct.expirationDate || null,
+    };
+    
+    // Avoid duplicates when initializing from localStorage
+    if (!this.products.has(id)) {
+      this.products.set(id, product);
+    }
+    
+    return product;
+  }
+
+  async updateProduct(id: string, insertProduct: InsertProduct): Promise<Product | undefined> {
+    const existing = this.products.get(id);
+    if (!existing) return undefined;
+    
+    const updated: Product = { 
+      ...insertProduct, 
+      id,
+      category: insertProduct.category || null,
+      description: insertProduct.description || null,
+      expirationDate: insertProduct.expirationDate || null,
+    };
+    this.products.set(id, updated);
+    return updated;
+  }
+
+  async deleteProduct(id: string): Promise<boolean> {
+    return this.products.delete(id);
+  }
+
+  // Borrowed Items
+  async getBorrowedItems(): Promise<BorrowedItem[]> {
+    return Array.from(this.borrowedItems.values());
+  }
+
+  async getBorrowedItem(id: string): Promise<BorrowedItem | undefined> {
+    return this.borrowedItems.get(id);
+  }
+
+  async createBorrowedItem(insertItem: InsertBorrowedItem | BorrowedItem): Promise<BorrowedItem> {
+    const id = (insertItem as any).id || randomUUID();
+    const item: BorrowedItem = {
+      ...insertItem,
+      id,
+      productId: insertItem.productId || randomUUID(),
+      borrowDate: (insertItem as any).borrowDate || new Date(),
+      returnDate: insertItem.returnDate || null,
+    };
+    
+    if (!this.borrowedItems.has(id)) {
+      this.borrowedItems.set(id, item);
+    }
+    
+    return item;
+  }
+
+  async markAsReturned(id: string): Promise<BorrowedItem | undefined> {
+    const item = this.borrowedItems.get(id);
+    if (!item) return undefined;
+    
+    const updated: BorrowedItem = { ...item, returned: 1 };
+    this.borrowedItems.set(id, updated);
+    return updated;
+  }
+
+  // Reminders
+  async getReminders(): Promise<Reminder[]> {
+    return Array.from(this.reminders.values());
+  }
+
+  async getReminder(id: string): Promise<Reminder | undefined> {
+    return this.reminders.get(id);
+  }
+
+  async createReminder(insertReminder: InsertReminder | Reminder): Promise<Reminder> {
+    const id = (insertReminder as any).id || randomUUID();
+    const reminder: Reminder = {
+      ...insertReminder,
+      id,
+      createdAt: (insertReminder as any).createdAt || new Date(),
+    };
+    
+    if (!this.reminders.has(id)) {
+      this.reminders.set(id, reminder);
+    }
+    
+    return reminder;
+  }
+
+  async deleteReminder(id: string): Promise<boolean> {
+    return this.reminders.delete(id);
   }
 }
 
