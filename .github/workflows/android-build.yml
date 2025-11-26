@@ -24,11 +24,13 @@ jobs:
         run: npm run mobile:prepare
 
       - name: Install Capacitor CLI
-        run: npm install @capacitor/cli @capacitor/core --no-audit --no-fund --save-exact
+        run: npm install @capacitor/cli @capacitor/core @capacitor/android --no-audit --no-fund --save-exact
 
-      - name: Ensure Android platform added
-        run: |
-          npx cap add android || true
+      - name: Remove old Android platform if exists
+        run: npx cap remove android || true
+
+      - name: Add Android platform
+        run: npx cap add android
 
       - name: Copy web assets to Android
         run: npx cap copy android
@@ -38,7 +40,7 @@ jobs:
 
       - name: Build debug APK
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon
+        run: ./gradlew assembleDebug --no-daemon --warning-mode all
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
