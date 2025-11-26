@@ -26,11 +26,8 @@ jobs:
       - name: Install Capacitor CLI
         run: npm install @capacitor/cli @capacitor/core @capacitor/android --no-audit --no-fund --save-exact
 
-      - name: Remove old Android platform if exists
-        run: npx cap remove android || true
-
-      - name: Add Android platform
-        run: npx cap add android
+      - name: Sync Capacitor with Android platform
+        run: npx cap sync android
 
       - name: Copy web assets to Android
         run: npx cap copy android
