@@ -1,0 +1,6 @@
+{
+  "appId": "com.storesage.app",
+  "appName": "StoreSage",
+  "webDir": "dist/public",
+  "bundledWebRuntime": false
+}

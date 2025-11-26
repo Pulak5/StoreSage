@@ -1,0 +1,5 @@
+npm install
+$env:USE_DB = "1"
+$env:NODE_ENV = "development"
+.\node_modules\.bin\tsx server/index.ts
+http://localhost:5000

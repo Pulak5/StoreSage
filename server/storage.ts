@@ -7,6 +7,7 @@ import {
   type InsertReminder,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { dbStorage } from "./dbStorage";
 
 export interface IStorage {
   // Products
@@ -151,4 +152,26 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Use DB-backed storage when USE_DB environment variable is truthy, otherwise in-memory storage
+const useDb = process.env.USE_DB === "true" || process.env.USE_DB === "1";
+
+// Attempt to load DB-backed storage dynamically. If loading fails (for example
+// because `better-sqlite3` isn't installed), fall back to the in-memory store
+// and log a helpful message instead of crashing the process.
+let storageInstance: IStorage;
+if (useDb) {
+  try {
+    // dynamic import so missing native modules don't throw at module-evaluation time
+    // Top-level await is supported because the project is ESM and Node 18+ is targeted.
+    const mod = await import("./dbStorage");
+    storageInstance = mod.dbStorage as IStorage;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn("USE_DB is enabled but failed to load DB storage. Falling back to in-memory storage.", err);
+    storageInstance = new MemStorage();
+  }
+} else {
+  storageInstance = new MemStorage();
+}
+
+export const storage = storageInstance;
