@@ -40,18 +40,18 @@ export default function Dashboard() {
         <p className="text-muted-foreground mt-1">Overview of your inventory</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium truncate">Total Products</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground flex-shrink-0 ml-2" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="min-h-[80px] flex flex-col justify-center">
             {isLoading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
               <>
-                <div className="text-2xl font-bold" data-testid="text-total-products">
+                <div className="text-2xl sm:text-3xl font-bold" data-testid="text-total-products">
                   {stats.totalProducts}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Items in inventory</p>
@@ -60,17 +60,17 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Low Stock</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-orange-500" />
+            <CardTitle className="text-xs sm:text-sm font-medium truncate">Low Stock</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-orange-500 flex-shrink-0 ml-2" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="min-h-[80px] flex flex-col justify-center">
             {isLoading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
               <>
-                <div className="text-2xl font-bold text-orange-500" data-testid="text-low-stock-count">
+                <div className="text-2xl sm:text-3xl font-bold text-orange-500" data-testid="text-low-stock-count">
                   {stats.lowStock}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Need reordering</p>
@@ -79,17 +79,17 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Expiring Soon</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-amber-500" />
+            <CardTitle className="text-xs sm:text-sm font-medium truncate">Expiring Soon</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 ml-2" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="min-h-[80px] flex flex-col justify-center">
             {isLoading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
               <>
-                <div className="text-2xl font-bold text-amber-500" data-testid="text-expiring-count">
+                <div className="text-2xl sm:text-3xl font-bold text-amber-500" data-testid="text-expiring-count">
                   {stats.expiringSoon}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Within 7 days</p>
@@ -98,17 +98,17 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Borrowed Items</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium truncate">Borrowed Items</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground flex-shrink-0 ml-2" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="min-h-[80px] flex flex-col justify-center">
             {isLoading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
               <>
-                <div className="text-2xl font-bold" data-testid="text-borrowed-count">
+                <div className="text-2xl sm:text-3xl font-bold" data-testid="text-borrowed-count">
                   {stats.borrowedItems}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Currently borrowed</p>
