@@ -22,10 +22,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility rootProject.ext.javaSourceCompatibility
-        targetCompatibility rootProject.ext.javaTargetCompatibility
-    }
 }
 
 repositories {
@@ -47,14 +43,6 @@ dependencies {
 }
 
 apply from: 'capacitor.build.gradle'
-
-// Override Java version set by capacitor.build.gradle to fix incompatibility
-android {
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-}
 
 try {
     def servicesJSON = file('google-services.json')
