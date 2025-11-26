@@ -2,5 +2,10 @@
   "appId": "com.storesage.app",
   "appName": "StoreSage",
   "webDir": "dist/public",
-  "bundledWebRuntime": false
+  "bundledWebRuntime": false,
+  "android": {
+    "minSDKVersion": 23,
+    "targetSDKVersion": 35,
+    "compileSdkVersion": 35
+  }
 }
